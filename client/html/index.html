@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Cast-Tools-Data-Collector</title>
+    <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <h1>Cast-Tools-Data-Collector</h1>
+    <hr class="dividerheader">
+    <div class="content-box">
+        <h3>Status:</h3>
+        <table>
+            <tr><td>Data-Collection:</td><td><span id="status-datacollection" class="statusdisabled">disabled</span></td></tr>
+            <tr><td>LCU:</td><td><span id="status-lcu" class="statusdisabled">disconnected</span></td></tr>
+            <tr><td>Live Client Data API:</td><td><span id="status-livedata" class="statusdisabled">disconnected</span></td></tr>
+        </table>
+        <hr>
+        <h3>General settings:</h3>
+        <table>
+            <tr><td>Server address:</td><td><input id="server"></td></tr>
+            <tr><td>Fetch frequency:</td><td><input id="frequency" value="1000"> ms</td></tr>
+        </table>
+        <input type="checkbox" id="auto-start">Directly start collecting data at startup<br>
+        <button id="startstopcollection">Start collecting data</button>
+        <hr class="smalldivider">
+        <h3>LCU-Data</h3>
+        <input type="checkbox" id="lcu-champselect-session">Send champselect-session
+        <div class="tooltip">?
+            <span class="tooltiptext">/lol-champ-select/v1/session</span>
+        </div><br>
+        <input type="checkbox" id="lcu-summonernames">Include summoner-names
+        <div class="tooltip">?
+            <span class="tooltiptext">/lol-summoner/v1 /summoners/</span>
+        </div>
+        <hr>
+        <h3>Live Client Data</h3>
+        <input type="checkbox" id="lcd-playerlist">Send playerlist
+        <div class="tooltip">?
+            <span class="tooltiptext">/liveclientdata/playerlist</span>
+        </div><br>
+        <input type="checkbox" id="lcd-eventdata">Send eventdata
+        <div class="tooltip">?
+            <span class="tooltiptext">/liveclientdata/eventdata</span>
+        </div><br>
+        <input type="checkbox" id="lcd-gamestats">Send gamestats
+        <div class="tooltip">?
+            <span class="tooltiptext">/liveclientdata/gamestats</span>
+        </div><br>
+    </div>
+    <script src="jquery.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
