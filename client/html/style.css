@@ -65,3 +65,7 @@ input[type=checkbox] {
 .statusdisabled {
     color: red;
 }
+
+.statusenabled {
+    color: green;
+}

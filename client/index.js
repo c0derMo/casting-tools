@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
-const readline = require('readline');
 const path = require('path');
 
 let window;
@@ -50,17 +49,16 @@ app.on('activate', () => {
 
 
 //Testing communication
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-rl.question("Send to browserwindow: ", answer => {
-    window.webContents.send("test", answer);
-});
-
-ipcMain.on('test', (ev, arg) => {
-    console.log("Recieved something")
-    console.log(ev)
-    console.log(arg);
+ipcMain.on("config", (ev, cfg) => {
+    let config = JSON.parse(cfg);
+    console.log("Recieved config");
+    console.log(config);
+    console.log("Sending config...");
+    let newConfig = config;
+    newConfig.status = {};
+    newConfig.status.datacollection = newConfig.general.running;
+    newConfig.status.lcu = newConfig.lcu.champselect;
+    newConfig.status.livedata = newConfig.lcd.eventdata;
+    delete newConfig.general.running;
+    window.webContents.send("config", JSON.stringify(newConfig));
 });
