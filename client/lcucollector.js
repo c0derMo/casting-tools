@@ -4,15 +4,22 @@ const request = require('./request');
 
 let isConnected = false;
 let connectionCredentials = {};
+let stateChangeListener = [];
 
 connector.on('connect', (data) => {
     connectionCredentials = data;
     isConnected = true;
+    stateChangeListener.forEach(elem => {
+        elem();
+    })
 });
 
 connector.on('disconnect', () => {
     connectionCredentials = {};
     isConnected = false;
+    stateChangeListener.forEach(elem => {
+        elem();
+    })
 })
 
 function startLCUCollection() {
@@ -21,6 +28,11 @@ function startLCUCollection() {
 
 function stopLCUCollection() {
     connector.stop();
+    connectionCredentials = {};
+    isConnected = false;
+    stateChangeListener.forEach(elem => {
+        elem();
+    })
 }
 
 function fetchChampselectData(cb) {
@@ -49,10 +61,22 @@ function isLCURunning() {
     return isConnected;
 }
 
+function addStateChangeListener(fnc) {
+    stateChangeListener.push(fnc);
+}
+
+function removeStateChangeListener(fnc) {
+    stateChangeListener = stateChangeListener.filter(elem => {
+        return elem != fnc;
+    })
+}
+
 module.exports = {
     startLCUCollection: startLCUCollection,
     stopLCUCollection: stopLCUCollection,
     fetchChampselectData: fetchChampselectData,
     fetchSummonerNames: fetchSummonerNames,
-    isLCURunning: isLCURunning
+    isLCURunning: isLCURunning,
+    addStateChangeListener: addStateChangeListener,
+    removeStateChangeListener: removeStateChangeListener
 }

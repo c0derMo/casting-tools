@@ -18,15 +18,15 @@ function createWindow () {
         preload: path.join(app.getAppPath(), 'preload.js')
     },
     center: true,
-    resizable: false
+    resizable: false,
+    show: false
   })
   // and load the index.html of the app.
   win.loadFile('html/index.html')
   win.setMenu(null);
 
-  win.webContents.openDevTools();
-
-  setTimeout(() => {
+  win.once('ready-to-show', () => {
+    win.show();
     //Initial config stuff
     let copyConfig = config;
     copyConfig.status = {};
@@ -36,13 +36,19 @@ function createWindow () {
     }
     copyConfig.status.lcu = false;
     copyConfig.status.livedata = false;
-    win.webContents.send("config", JSON.stringify(copyConfig));
-  }, 1000);
+    window.webContents.send("config", JSON.stringify(copyConfig));
+
+    lcucollector.addStateChangeListener(sendConfig);
+  });
+
+  win.webContents.openDevTools();
 
   window = win;
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(createWindow);
+
+
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     configmanager.writeConfig(config);
@@ -58,8 +64,7 @@ app.on('activate', () => {
 //Testing communication
 ipcMain.on("config", (ev, cfg) => {
     let newCfg = JSON.parse(cfg);
-    let sendConfig = parseConfig(newCfg);
-    window.webContents.send("config", JSON.stringify(sendConfig));
+    parseConfig(newCfg);
 });
 
 function startDataCollection() {
@@ -93,12 +98,16 @@ function parseConfig(newCfg) {
   delete newCfg.general.running;
   config = newCfg;
 
-  let sendConfig = newCfg;
+  sendConfig();
+}
+
+function sendConfig() {
+  let sendConfig = config;
   sendConfig.status = {};
   sendConfig.status.datacollection = isCollectionRunning;
   sendConfig.status.lcu = lcucollector.isLCURunning();
   sendConfig.status.livedata = false;
-  return sendConfig;
+  window.webContents.send("config", JSON.stringify(sendConfig));
 }
 
 function fetchData() {
