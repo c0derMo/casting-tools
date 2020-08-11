@@ -1,13 +1,22 @@
 const { ipcRenderer } = require('electron');
 
 let dataRecievedCallback;
+let stuffToSend = [];
 
 function setConfigRevcievedCallback(cb) {
     dataRecievedCallback = cb;
+    stuffToSend.forEach(function(element) {
+        cb(stuffToSend);
+    });
+    stuffToSend = [];
 }
 
 ipcRenderer.on('config', (ev, msg) => {
-    dataRecievedCallback(JSON.parse(msg));
+    try {
+        dataRecievedCallback(JSON.parse(msg));   
+    } catch (error) {
+        stuffToSend.push(msg);
+    }
 });
 
 function sendConfig(config) {

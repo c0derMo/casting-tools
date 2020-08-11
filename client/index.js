@@ -113,7 +113,7 @@ function sendConfig() {
 function fetchData() {
   if(config.lcu.champselect) {
     lcucollector.fetchChampselectData((champselectData) => {
-      if(config.lcu.names) {
+      if(config.lcu.names && champselectData.httpStatus != 404) {
         lcucollector.fetchSummonerNames(champselectData, (newData) => {
           request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(newData)});
         });
