@@ -3,6 +3,7 @@ const path = require('path');
 const configmanager = require('./configmanager');
 const lcucollector = require('./lcucollector');
 const request = require('./request');
+const livedatacollector = require('./livedatacollector');
 
 let window;
 let config = configmanager.loadConfig();
@@ -39,6 +40,7 @@ function createWindow () {
     window.webContents.send("config", JSON.stringify(copyConfig));
 
     lcucollector.addStateChangeListener(sendConfig);
+    livedatacollector.addStateChangeListener(sendConfig);
   });
 
   win.webContents.openDevTools();
@@ -106,7 +108,10 @@ function sendConfig() {
   sendConfig.status = {};
   sendConfig.status.datacollection = isCollectionRunning;
   sendConfig.status.lcu = lcucollector.isLCURunning();
-  sendConfig.status.livedata = false;
+
+  let shouldLiveGameRun = config.lcd.playerlist || config.lcd.eventdata || config.lcd.gamestats;
+
+  sendConfig.status.livedata = livedatacollector.isConnected() && shouldLiveGameRun;
   window.webContents.send("config", JSON.stringify(sendConfig));
 }
 
@@ -115,11 +120,27 @@ function fetchData() {
     lcucollector.fetchChampselectData((champselectData) => {
       if(config.lcu.names && champselectData.httpStatus != 404) {
         lcucollector.fetchSummonerNames(champselectData, (newData) => {
-          request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(newData)});
+          request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(newData)}, {rejectUnauthorised: false}).catch(() => {});
         });
       } else {
-        request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(champselectData)});
+        request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(champselectData)}, {rejectUnauthorised: false}).catch(() => {});
       }
     })
+  }
+
+  if(config.lcd.playerlist) {
+    livedatacollector.fetchPlayerlist((data) => {
+      request.post(config.general.server + "/overlay/playerdata", {playerdata: data}, {rejectUnauthorised: false}).catch(() => {});
+    });
+  }
+  if(config.lcd.eventdata) {
+    livedatacollector.fetchGamestats((data) => {
+      request.post(config.general.server + "/overlay/eventdata", {eventdata: data}, {rejectUnauthorised: false}).catch(() => {});
+    });
+  }
+  if(config.lcd.gamestats) {
+    livedatacollector.fetchGamestats((data) => {
+      request.post(config.general.server + "/overlay/gamedata", {gamedata: data}, {rejectUnauthorised: false}).catch(() => {});
+    });
   }
 }
