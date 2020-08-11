@@ -2,8 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path');
 const configmanager = require('./configmanager');
 const lcucollector = require('./lcucollector');
-const tiny = require('tiny-json-http');
-const { timingSafeEqual } = require('crypto');
+const request = require('./request');
 
 let window;
 let config = configmanager.loadConfig();
@@ -107,10 +106,10 @@ function fetchData() {
     lcucollector.fetchChampselectData((champselectData) => {
       if(config.lcu.names) {
         lcucollector.fetchSummonerNames(champselectData, (newData) => {
-          tiny.post({url: config.general.server + "/post-pnb-data", data: {someData: JSON.stringify(newData)}});
+          request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(newData)});
         });
       } else {
-        tiny.post({url: config.general.server + "/post-pnb-data", data: {someData: JSON.stringify(champselectData)}});
+        request.post(config.general.server + "/post-pnb-data", {someData: JSON.stringify(champselectData)});
       }
     })
   }

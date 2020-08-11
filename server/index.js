@@ -19,10 +19,10 @@ app.use("/overlay", overlayroute)
 
 app.post('/post-pnb-data', (req, res) => {
     let data = JSON.parse(req.body.someData);
-    console.log(data)
     if (data.httpStatus != 404) {
         lastPnbData = data;
     }
+    res.send("OK");
 });
 
 app.get('/get-pnb-data', (req, res) => {
