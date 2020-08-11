@@ -6,7 +6,6 @@ $('#startstopcollection').on('click', () => {
 });
 
 $('input').on('change', () => {
-    console.log(jsonifySettings());
     window.Bridge.sendConfig(jsonifySettings());
 });
 
@@ -36,9 +35,11 @@ function setSettings(data) {
     if(data.status.datacollection) {
         $('#status-datacollection').text('enabled').removeClass('statusdisabled').addClass('statusenabled');
         $('#startstopcollection').text("Stop collecting data");
+        running = true;
     } else {
         $('#status-datacollection').text('disabled').removeClass('statusenabled').addClass('statusdisabled');
         $('#startstopcollection').text("Start collecting data");
+        running = false;
     }
     if(data.status.lcu) {
         $('#status-lcu').text('connected').removeClass('statusdisabled').addClass('statusenabled');

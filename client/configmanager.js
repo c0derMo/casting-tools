@@ -1,10 +1,13 @@
 const fs = require('fs');
 
 function loadConfig() {
-    fs.readFile("config.json", {encoding: 'utf8'}, (err, data) => {
-        if(err.code == 'ENOENT') {
+    let data;
+    try {
+        data = JSON.parse(fs.readFileSync("config.json", {encoding: 'utf8'}))
+    } catch (error) {
+        if(error.code == 'ENOENT') {
             //Config does not exist
-            let config = {
+            data = {
                 general: {
                     server: '',
                     frequency: 1000,
@@ -20,11 +23,9 @@ function loadConfig() {
                     gamestats: false
                 }
             }
-            return config;
-        }
-
-        return JSON.parse(data);
-    });
+        }   
+    }
+    return data;
 }
 
 function writeConfig(cfg) {

@@ -24,17 +24,21 @@ function createWindow () {
   win.loadFile('html/index.html')
   win.setMenu(null);
 
-  //Initial config stuff
-  let copyConfig = config;
-  copyConfig.status = {};
-  if(config.general.autostart) {
-    copyConfig.status.datacollection = true;
-    startDataCollection();
-  }
-  copyConfig.status.lcu = false;
-  copyConfig.status.livedata = false;
-  delete copyConfig.general.running;
-  win.webContents.send("config", JSON.stringify(copyConfig));
+  win.webContents.openDevTools();
+
+  setTimeout(() => {
+    //Initial config stuff
+    let copyConfig = config;
+    copyConfig.status = {};
+    if(config.general.autostart) {
+      copyConfig.status.datacollection = true;
+      startDataCollection();
+    }
+    copyConfig.status.lcu = false;
+    copyConfig.status.livedata = false;
+    win.webContents.send("config", JSON.stringify(copyConfig));
+  }, 1000);
+
   window = win;
 }
 
@@ -58,7 +62,7 @@ ipcMain.on("config", (ev, cfg) => {
       if(newCfg.general.running) {
         startDataCollection();
       } else {
-        stopDataCollection();
+        endDataCollection();
       }
     }
     delete newCfg.general.running;
