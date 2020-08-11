@@ -2,12 +2,6 @@ var running = false;
 
 $('#startstopcollection').on('click', () => {
     running = !running;
-    if(running) {
-        $('#startstopcollection').text("Stop collecting data");
-    } else {
-        $('#startstopcollection').text("Start collecting data");
-    }
-    console.log(jsonifySettings());
     window.Bridge.sendConfig(jsonifySettings());
 });
 
@@ -41,8 +35,10 @@ function setSettings(data) {
     //Status
     if(data.status.datacollection) {
         $('#status-datacollection').text('enabled').removeClass('statusdisabled').addClass('statusenabled');
+        $('#startstopcollection').text("Stop collecting data");
     } else {
         $('#status-datacollection').text('disabled').removeClass('statusenabled').addClass('statusdisabled');
+        $('#startstopcollection').text("Start collecting data");
     }
     if(data.status.lcu) {
         $('#status-lcu').text('connected').removeClass('statusdisabled').addClass('statusenabled');
