@@ -11,5 +11,9 @@
   "license": "ISC",
   "devDependencies": {
     "electron": "^9.2.0"
+  },
+  "dependencies": {
+    "lcu-connector": "^2.1.3",
+    "tiny-json-http": "^7.2.2"
   }
 }

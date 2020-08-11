@@ -1,8 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path');
 const configmanager = require('./configmanager');
-const { start } = require('repl');
-const { isDate } = require('util');
+const lcucollector = require('./lcucollector');
+const tiny = require('tiny-json-http');
+const { timingSafeEqual } = require('crypto');
 
 let window;
 let config = configmanager.loadConfig();
@@ -58,28 +59,59 @@ app.on('activate', () => {
 //Testing communication
 ipcMain.on("config", (ev, cfg) => {
     let newCfg = JSON.parse(cfg);
-    if(newCfg.general.running != isCollectionRunning) {
-      if(newCfg.general.running) {
-        startDataCollection();
-      } else {
-        endDataCollection();
-      }
-    }
-    delete newCfg.general.running;
-    config = newCfg;
-
-    let sendConfig = newCfg;
-    sendConfig.status = {};
-    sendConfig.status.datacollection = isCollectionRunning;
-    sendConfig.status.lcu = false;
-    sendConfig.status.livedata = false;
+    let sendConfig = parseConfig(newCfg);
     window.webContents.send("config", JSON.stringify(sendConfig));
 });
 
 function startDataCollection() {
   isCollectionRunning = true;
+  eventLoop = setInterval(fetchData, config.general.frequency)
 }
 
 function endDataCollection() {
   isCollectionRunning = false;
+  clearInterval(eventLoop);
+}
+
+function parseConfig(newCfg) {
+  if(newCfg.general.running != isCollectionRunning) {
+    if(newCfg.general.running) {
+      startDataCollection();
+    } else {
+      endDataCollection();
+    }
+  }
+
+  let shouldLCURun = (newCfg.lcu.champselect || newCfg.lcu.names);
+  if(shouldLCURun != lcucollector.isLCURunning()) {
+    if(shouldLCURun) {
+      lcucollector.startLCUCollection();
+    } else {
+      lcucollector.stopLCUCollection();
+    }
+  }
+
+  delete newCfg.general.running;
+  config = newCfg;
+
+  let sendConfig = newCfg;
+  sendConfig.status = {};
+  sendConfig.status.datacollection = isCollectionRunning;
+  sendConfig.status.lcu = lcucollector.isLCURunning();
+  sendConfig.status.livedata = false;
+  return sendConfig;
+}
+
+function fetchData() {
+  if(config.lcu.champselect) {
+    lcucollector.fetchChampselectData((champselectData) => {
+      if(config.lcu.names) {
+        lcucollector.fetchSummonerNames(champselectData, (newData) => {
+          tiny.post({url: config.general.server + "/post-pnb-data", data: {someData: JSON.stringify(newData)}});
+        });
+      } else {
+        tiny.post({url: config.general.server + "/post-pnb-data", data: {someData: JSON.stringify(champselectData)}});
+      }
+    })
+  }
 }
