@@ -5,7 +5,7 @@ let isLiveConnected = false;
 let stateChangeListener = [];
 
 function fetchPlayerlist(cb) {
-    request.get('https://localhost:2999/liveclientdata/playerlist', {rejectUnauthorised: false}).then((data) => {
+    request.get('https://localhost:2999/liveclientdata/playerlist', {rejectUnauthorized: false}).then((data) => {
         isLiveConnected = true;
         if(!isLiveConnected) {
             _callAllListeners();
@@ -21,7 +21,7 @@ function fetchPlayerlist(cb) {
 }
 
 function fetchEventdata(cb) {
-    request.get('https://localhost:2999/liveclientdata/eventdata', {rejectUnauthorised: false}).then((data) => {
+    request.get('https://localhost:2999/liveclientdata/eventdata', {rejectUnauthorized: false}).then((data) => {
         isLiveConnected = true;
         if(!isLiveConnected) {
             _callAllListeners();
@@ -37,7 +37,7 @@ function fetchEventdata(cb) {
 }
 
 function fetchGamestats(cb) {
-    request.get('https://localhost:2999/liveclientdata/gamestats', {rejectUnauthorised: false}).then((data) => {
+    request.get('https://localhost:2999/liveclientdata/gamestats', {rejectUnauthorized: false}).then((data) => {
         isLiveConnected = true;
         if(!isLiveConnected) {
             _callAllListeners();

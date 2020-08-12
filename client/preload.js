@@ -6,7 +6,7 @@ let stuffToSend = [];
 function setConfigRevcievedCallback(cb) {
     dataRecievedCallback = cb;
     stuffToSend.forEach(function(element) {
-        cb(stuffToSend);
+        cb(element);
     });
     stuffToSend = [];
 }

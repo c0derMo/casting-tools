@@ -130,17 +130,17 @@ function fetchData() {
 
   if(config.lcd.playerlist) {
     livedatacollector.fetchPlayerlist((data) => {
-      request.post(config.general.server + "/overlay/playerdata", {playerdata: data}, {rejectUnauthorised: false}).catch(() => {});
+      if(data != {}) request.post(config.general.server + "/overlay/playerdata", {playerdata: JSON.stringify(data)}, {rejectUnauthorised: false}).catch(() => {});
     });
   }
   if(config.lcd.eventdata) {
-    livedatacollector.fetchGamestats((data) => {
-      request.post(config.general.server + "/overlay/eventdata", {eventdata: data}, {rejectUnauthorised: false}).catch(() => {});
+    livedatacollector.fetchEventdata((data) => {
+      if(data != {}) request.post(config.general.server + "/overlay/eventdata", {eventdata: JSON.stringify(data)}, {rejectUnauthorised: false}).catch(() => {});
     });
   }
   if(config.lcd.gamestats) {
     livedatacollector.fetchGamestats((data) => {
-      request.post(config.general.server + "/overlay/gamedata", {gamedata: data}, {rejectUnauthorised: false}).catch(() => {});
+      if(data != {}) request.post(config.general.server + "/overlay/gamedata", {gamedata: JSON.stringify(data)}, {rejectUnauthorised: false}).catch(() => {});
     });
   }
 }
