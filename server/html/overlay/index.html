@@ -2,13 +2,20 @@
 <html>
     <head>
         <style>
-            .html, body {
+            div {
+                font-family: "Arial Black", Gadget, sans-serif;
+            }
+
+            html, body {
                 padding: 0;
                 margin: 0;
+                background-image: url("./LeagueBG.png");
+                background-repeat: no-repeat;
             }
             .wrapper {
                 width: 1920px;
                 height: 1080px;
+                background-image: url("./Overlay.png");
                 position: absolute;
             }
             .secondaryRune {
@@ -52,6 +59,7 @@
             .timer {
                 font-size: 25px;
                 position: absolute;
+                /* width: 200px; */
             }
 
             .bt {
@@ -82,20 +90,122 @@
                 height: 30px;
                 left: 45%;
             }
+
+            .teamName {
+                position: absolute;
+                color: white;
+                font-size: 35px;
+                top: 5px;
+            }
+
+            .redTeam {
+                right: 490px;
+            }
+
+            .blueTeam {
+                left: 500px;
+            }
+
+            .objectiveBox {
+                width: 185px;
+                height: 83px;
+                background-image: url('./ObjBacking.png');
+                background-size: 185px 83px;
+                position: absolute;
+                top: 20px;
+            }
+
+            .dragonBox {
+                left: 100px;
+            }
+
+            .baronBox {
+                right: 100px;
+            }
+
+            .objectiveBox img {
+                width: 35px;
+                height: 35px;
+                margin-top: 24px;
+                margin-left: 24px;
+            }
+
+            .objectiveBox div.timer {
+                color: white;
+                font-size: 35px;
+                position: inherit;
+                top: 18px;
+                left: 70px;
+            }
+
+            .objectiveBox div.team {
+                display: none;
+            }
+
+            .objectiveBox div.members {
+                display: none;
+            }
+
+            .objectiveBox.active {
+                width: 246px;
+                height: 110px;
+                background-size: 246px 110px;
+            }
+
+            .objectiveBox.active img {
+                width: 35px;
+                height: 35px;
+                margin-top: 20px;
+                margin-left: 24px;
+            }
+            
+            .objectiveBox.active div.timer {
+                color: white;
+                font-size: 30px;
+                position: inherit;
+                top: 55px;
+                left: 30px;
+            }
+
+            .objectiveBox.active div.team {
+                color: white;
+                font-size: 40px;
+                display: unset;
+                position: inherit;
+                top: 15px;
+                right: 30px;
+            }
+
+            .objectiveBox.active .team.red {
+                color: #e83d3d;
+            }
+
+            .objectiveBox.active .team.blue {
+                color: #0099e0;
+            }
+
+            .objectiveBox.active div.members {
+                color: white;
+                font-size: 30px;
+                display: unset;
+                position: inherit;
+                top: 55px;
+                right: 30px;
+            }
         </style>
     </head>
     <body>
         <div class="wrapper">
-            <img id="rune0" class="secondaryRune p1 bp" src="Inspiration_icon.png">
-            <img id="rune1" class="secondaryRune p2 bp" src="Domination_icon.png">
-            <img id="rune2" class="secondaryRune p3 bp" src="Resolve_icon.png">
-            <img id="rune3" class="secondaryRune p4 bp" src="Sorcery_icon.png">
-            <img id="rune4" class="secondaryRune p5 bp" src="Precision_icon.png">
-            <img id="rune5" class="secondaryRune p1 rp" src="Inspiration_icon.png">
-            <img id="rune6" class="secondaryRune p2 rp" src="Inspiration_icon.png">
-            <img id="rune7" class="secondaryRune p3 rp" src="Inspiration_icon.png">
-            <img id="rune8" class="secondaryRune p4 rp" src="Inspiration_icon.png">
-            <img id="rune9" class="secondaryRune p5 rp" src="Inspiration_icon.png">
+            <img id="rune_blue1" class="secondaryRune p1 bp" src="inspiration.png">
+            <img id="rune_blue2" class="secondaryRune p2 bp" src="resolve.png">
+            <img id="rune_blue3" class="secondaryRune p3 bp" src="domination.png">
+            <img id="rune_blue4" class="secondaryRune p4 bp" src="sorcery.png">
+            <img id="rune_blue5" class="secondaryRune p5 bp" src="precision.png">
+            <img id="rune_red1" class="secondaryRune p1 rp" src="inspiration.png">
+            <img id="rune_red2" class="secondaryRune p2 rp" src="inspiration.png">
+            <img id="rune_red3" class="secondaryRune p3 rp" src="inspiration.png">
+            <img id="rune_red4" class="secondaryRune p4 rp" src="inspiration.png">
+            <img id="rune_red5" class="secondaryRune p5 rp" src="inspiration.png">
 
             <div id="inhibtimers" class="inhibtimers" status="shown">
                 <div id="bluetop" class="timer bt top">0:00</div>
@@ -108,6 +218,22 @@
                 <img class="inhibicon mid" src="Middle_icon.png">
                 <img class="inhibicon bot" src="Bottom_icon.png">
             </div>
+
+            <div id="blueTeamShort" class="blueTeam teamName">AAA</div>
+            <div id="redTeamShort" class="redTeam teamName">BBB</div>
+
+            <div id="dragonBox" class="objectiveBox dragonBox">
+                <img id="dragonImg" src="Elder.png">
+                <div id="dragonTimer" class="timer">3:00</div>
+                <div id="dragonMembers" class="members">0/0</div>
+                <div id="dragonTeam" class="team">AAA</div>
+            </div>
+            <div id="baronBox" class="objectiveBox baronBox active">
+                <img src="Baron.png">
+                <div id="baronTimer" class="timer">LIVE</div>
+                <div id="baronMembers" class="members">5/5</div>
+                <div id="baronTeam" class="team blue">BBB</div>
+            </div>
         </div>
         <script
             src="https://code.jquery.com/jquery-3.5.1.min.js"
@@ -116,9 +242,9 @@
         <script>
             let inhibTimers = {};
 
-            function updateTimer(elem, time) {
+            function updateTimer(elem, time, timeOver="---") {
                 if(time < 0) {
-                    elem.text("---")
+                    elem.text(timeOver)
                     return;
                 }
                 var seconds = time % 60;
@@ -134,112 +260,91 @@
                 }
             }
 
-            //UPDATE RUNES
-            function updateRunes() {
-                $.getJSON("/overlay/playerdata", (data) => {
+            //Update data
+            function update() {
+                $.getJSON('/overlay/combineddata', (data) => {
+                    updateTeamNames();
                     if(data == {}) return;
-                    data.forEach(function(element, index) {
-                        var tree = element.runes.secondaryRuneTree.id;
-                        var imgname = "";
-                        switch(tree) {
-                            case 8200:
-                                imgname = "Sorcery_icon.png";
-                                break;
-                            case 8000:
-                                imgname = "Precision_icon.png";
-                                break;
-                            case 8100:
-                                imgname = "Domination_icon.png";
-                                break;
-                            case 8300:
-                                imgname = "Inspiration_icon.png";
-                                break;
-                            case 8400:
-                                imgname = "Resolve_icon.png";
-                                break;
-                        }
-                        $('#rune' + index).attr('src', imgname);
-                    });
-                });
-            }
-
-            //UPDATE INHIBTIMERS
-            function updateInhibtimers() {
-                inhibTimers = {
-                    "blue": {
-                        "top": -1,
-                        "mid": -1,
-                        "bot": -1
-                    },
-                    "red": {
-                        "top": -1,
-                        "mid": -1,
-                        "bot": -1
+                    if(!data.otherFeatures.inhibTimers.blue.show && !data.otherFeatures.inhibTimers.red.show && $('#inhibtimers').attr("status") == "shown") {
+                        $('#inhibtimers').slideUp();
+                        $('#inhibtimers').attr("status", "hidden");
                     }
-                }
-                $.getJSON('/overlay/gamedata', (gdata) => {
-                    $.getJSON('/overlay/eventdata', (edata) => {
-                        edata.Events.forEach(function(element) {
-                            if(element.EventName == "InhibKilled" && (gdata.gameTime - element.EventTime) < 300) {
-                                let timeUntilInhibUp = Math.floor(300 - (gdata.gameTime - element.EventTime));
-                                switch(element.InhibKilled) {
-                                    case "Barracks_T1_C1":
-                                        inhibTimers.blue.mid = timeUntilInhibUp;
-                                        break;
-                                    case "Barracks_T1_L1":
-                                        inhibTimers.blue.top = timeUntilInhibUp;
-                                        break;
-                                    case "Barracks_T1_R1":
-                                        inhibTimers.blue.bot = timeUntilInhibUp;
-                                        break;
-                                    case "Barracks_T2_C1":
-                                        inhibTimers.red.mid = timeUntilInhibUp;
-                                        break;
-                                    case "Barracks_T2_R1":
-                                        inhibTimers.red.bot = timeUntilInhibUp;
-                                        break;
-                                    case "Barracks_T2_L1":
-                                        inhibTimers.red.top = timeUntilInhibUp;
-                                        break;
-                                }   
-                            }
-                        });
-                        if(inhibTimers.blue.top < 0 &&
-                        inhibTimers.blue.mid < 0 &&
-                        inhibTimers.blue.bot < 0 &&
-                        inhibTimers.red.top < 0 &&
-                        inhibTimers.red.mid < 0 &&
-                        inhibTimers.red.bot < 0 &&
-                        $('#inhibtimers').attr("status") == "shown") {
-                            $('#inhibtimers').slideUp();
-                            $('#inhibtimers').attr("status", "hidden");
-                        }
 
-                        if((inhibTimers.blue.top != -1 ||
-                        inhibTimers.blue.mid != -1 ||
-                        inhibTimers.blue.bot != -1 ||
-                        inhibTimers.red.top != -1 ||
-                        inhibTimers.red.mid != -1 ||
-                        inhibTimers.red.bot != -1) &&
-                        $('#inhibtimers').attr("status") == "hidden") {
-                            $('#inhibtimers').slideDown();
-                            $('#inhibtimers').attr("status", "shown");
-                        }
+                    if((data.otherFeatures.inhibTimers.blue.show || data.otherFeatures.inhibTimers.red.show) && $('#inhibtimers').attr("status") == "hidden") {
+                        $('#inhibtimers').slideDown();
+                        $('#inhibtimers').attr("status", "shown");
+                    }
 
-                        updateTimer($('#bluetop'), inhibTimers.blue.top)
-                        updateTimer($('#bluemid'), inhibTimers.blue.mid)
-                        updateTimer($('#bluebot'), inhibTimers.blue.bot)
-                        updateTimer($('#redtop'), inhibTimers.red.top)
-                        updateTimer($('#redmid'), inhibTimers.red.mid)
-                        updateTimer($('#redbot'), inhibTimers.red.bot)
+                    //Update inhibtimers
+                    updateTimer($('#bluetop'), data.otherFeatures.inhibTimers.blue.top)
+                    updateTimer($('#bluemid'), data.otherFeatures.inhibTimers.blue.mid)
+                    updateTimer($('#bluebot'), data.otherFeatures.inhibTimers.blue.bot)
+                    updateTimer($('#redtop'), data.otherFeatures.inhibTimers.red.top)
+                    updateTimer($('#redmid'), data.otherFeatures.inhibTimers.red.mid)
+                    updateTimer($('#redbot'), data.otherFeatures.inhibTimers.red.bot)
+
+                    //Blue Team Runetrees
+                    data.blueTeamPlayers.forEach(function(player, index) {
+                        $('#rune_blue' + (index+1)).text("/overlay/" + player.secondaryRuneTree + ".png");
                     });
+
+                    //Red Team Runetrees
+                    data.redTeamPlayers.forEach(function(player, index) {
+                        $('#rune_red' + (index+1)).attr('src', "/overlay/" + player.secondaryRuneTree + ".png");
+                    });
+
+
+                    //Update obj timers
+                    //Buffs
+                    if(data.otherFeatures.buffs.elderBuff.active) {
+                        $('#dragonBox').addClass("active");
+                        $("#dragonMembers").text(data.otherFeatures.buffs.elderBuff.members + "/5");
+                        updateTimer($("#dragonTimer"), data.otherFeatures.buffs.elderBuff.remainingTime);
+                        if(data.otherFeatures.buffs.elderBuff.team == 1) {
+                            $.ajax("/blue_shortname").then((data) => {
+                                $("#dragonTeam").text(data).addClass("blue").removeClass("red");
+                            })
+                        } else {
+                            $.ajax("/red_shortname").then((data) => {
+                                $("#dragonTeam").text(data).addClass("red").removeClass("blue");
+                            })
+                        }
+                    } else {
+                        $("#dragonBox").removeClass("active");
+                        updateTimer($('#dragonTimer'), data.otherFeatures.objectiveTimers.drakeTimer.timer, "LIVE");
+                        $('#dragonImg').attr('src', "/overlay/" + data.otherFeatures.objectiveTimers.drakeTimer.type + ".png");
+                    }
+                    if(data.otherFeatures.buffs.baronBuff.active) {
+                        $("#baronBox").addClass("active");
+                        $("#baronMembers").text(data.otherFeatures.buffs.baronBuff.members + "/5");
+                        updateTimer($("#baronTimer"), data.otherFeatures.buffs.baronBuff.remainingTime);
+                        if(data.otherFeatures.buffs.baronBuff.team == 1) {
+                            $.ajax("/blue_shortname").then((data) => {
+                                $("#baronTeam").text(data).addClass("blue").removeClass("red");
+                            })
+                        } else {
+                            $.ajax("/red_shortname").then((data) => {
+                                $("#baronTeam").text(data).addClass("red").removeClass("blue");
+                            })
+                        }
+                    } else {
+                        updateTimer($('#baronTimer'), data.otherFeatures.objectiveTimers.baronTimer, "LIVE");
+                        $("#baronBox").removeClass("active");
+                    }
                 });
             }
 
-            setInterval(() => {
-                updateRunes();
-                updateInhibtimers();
-            }, 1000);
+            function updateTeamNames() {
+                //Update Teamnames
+                $.ajax("/blue_shortname").then((data) => {
+                    $("#blueTeamShort").text(data);
+                });
+                $.ajax("/red_shortname").then((data) => {
+                    $("#redTeamShort").text(data);
+                });
+            }
+
+            setInterval(update, 1000);
         </script>
     </body>
 </html>

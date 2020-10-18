@@ -165,38 +165,12 @@
                 background-color: rgba(100, 0, 0, 0.5);
             }
 
-            @keyframes redpick_pulse {
-                from {
-                    box-shadow: inset #ff0000 0px 0px 10px 0px;
-                }
-                to {
-                    box-shadow: inset #ff0000 0px 0px 50px 0px;
-                }
-            }
-
-            @keyframes bluepick_pulse {
-                from {
-                    box-shadow: inset #0000ff 0px 0px 10px 0px;
-                }
-                to {
-                    box-shadow: inset #0000ff 0px 0px 50px 0px;
-                }
-            }
-
             .picking.rs {
-                animation-duration: 1.5s;
-                animation-name: redpick_pulse;
-                animation-iteration-count: infinite;
-                animation-direction: alternate;
-                animation-timing-function: linear;
+                box-shadow: inset #ff0000 0px 0px 50px 0px;
             }
 
             .picking.bs {
-                animation-duration: 1.5s;
-                animation-name: bluepick_pulse;
-                animation-iteration-count: infinite;
-                animation-direction: alternate;
-                animation-timing-function: linear;
+                box-shadow: inset #0000ff 0px 0px 50px 0px;
             }
 
             .middle_timerbox {
@@ -342,7 +316,7 @@
             var ddragonData = {};
 
             function _getDDragonData() {
-                $.getJSON('http://ddragon.leagueoflegends.com/cdn/10.21.1/data/en_US/champion.json', (data) => {
+                $.getJSON('http://ddragon.leagueoflegends.com/cdn/10.16.1/data/en_US/champion.json', (data) => {
                     ddragonData = data;
                 });
             }
@@ -356,96 +330,179 @@
             }
 
             function _getSquareURLOfChamp(champ) {
-                if(champ == undefined) {
-                    return "https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/-1.png";
-                }
-                return "http://ddragon.leagueoflegends.com/cdn/10.21.1/img/champion/" + champ + ".png"
+                return "http://ddragon.leagueoflegends.com/cdn/10.16.1/img/champion/" + champ + ".png"
             }
 
             function _getBannerURLOfChamp() {
                 return "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/" + champ + "_0.jpg"
             }
 
+            function _getTeamOfCellId(data, cellId) {
+                var returning = 0;
+                data.myTeam.forEach(function(element) {
+                    if(element.cellId == cellId) {
+                        returning = element.team;
+                        return;
+                    }
+                });
+                if (returning != 0) return returning;
+                data.theirTeam.forEach(function(element) {
+                    if(element.cellId == cellId) {
+                        returning = element.team;
+                        return;
+                    }
+                });
+                return returning;
+            }
+
             function updateEverything(data) {
-                //Blue Team Players
-                data.blueTeam.players.forEach(function(btP, index) {
-                    let elem = $('#blueside_pick' + (index+1));
-                    if(btP.championId != 0) {
-                        var champName = _convertChampKeyToInternalName(btP.championId);
+                //2 = red side, 1 = blue side
+                localTeam = data.myTeam[0].team;
+
+                //CLASH BAN FIX
+                var myTeamBans = [];
+                var enemyTeamBans = [];
+                data.actions.forEach(function(element2) {
+                    element = element2[0];
+                    if(element.type == "ban" && element.completed == true) {
+                        var team = _getTeamOfCellId(data, element.actorCellId);
+                        if(team == localTeam) {
+                            myTeamBans.push(element.championId);
+                        } else {
+                            enemyTeamBans.push(element.championId);
+                        }
+                    }
+                });
+
+                myTeamBans.forEach(function(element, index) {
+                    var elem;
+                    if(localTeam == 1) {
+                        elem = $('#blueside_ban' + (index+1));
+                    } else {
+                        elem = $('#redside_ban' + (index+1));
+                    }
+                    var champName = _convertChampKeyToInternalName(element);
+                    elem.attr("src", _getSquareURLOfChamp(champName));
+                    $("#" + elem.attr('id') + "_overlay").attr("bandone", "true");
+                });
+                enemyTeamBans.forEach(function(element, index) {
+                    var elem;
+                    if(localTeam == 2) {
+                        elem = $('#blueside_ban' + (index+1));
+                    } else {
+                        elem = $('#redside_ban' + (index+1));
+                    }
+                    var champName = _convertChampKeyToInternalName(element);
+                    elem.attr("src", _getSquareURLOfChamp(champName));
+                    $("#" + elem.attr('id') + "_overlay").attr("bandone", "true");
+                });
+
+                //UPDATING PICKS
+                data.myTeam.forEach(function(element, index) {
+                    var elem;
+                    if(localTeam == 1) {
+                        elem = $('#blueside_pick' + (index+1));
+                    } else {
+                        elem = $('#redside_pick' + (index+1));
+                    }
+                    elem.attr("cellID", element.cellId);
+                    $("#" + elem.attr('id') + "_name").attr("cellID", element.cellId)
+                    $("#" + elem.attr('id') + "_overlay").attr("cellID", element.cellId)
+                    if(element.championId != 0) {
+                        var champName = _convertChampKeyToInternalName(element.championId);
                         elem.attr("src", _getBannerURLOfChamp(champName));
                     }
-                    if(btP.picking) {
-                        $('#' + elem.attr('id') + "_overlay").addClass("picking");
-                    } else {
-                        $('#' + elem.attr('id') + "_overlay").removeClass("picking");
-                    }
-                    $('#' + elem.attr('id') + "_name").text(btP.name);
                 });
-                //Red Team Players
-                data.redTeam.players.forEach(function(btP, index) {
-                    let elem = $('#redside_pick' + (index+1));
-                    if(btP.championId != 0) {
-                        var champName = _convertChampKeyToInternalName(btP.championId);
+
+                data.theirTeam.forEach(function(element, index) {
+                    var elem;
+                    if(localTeam == 2) {
+                        elem = $('#blueside_pick' + (index+1));
+                    } else {
+                        elem = $('#redside_pick' + (index+1));
+                    }
+                    elem.attr("cellID", element.cellId);
+                    $("#" + elem.attr('id') + "_name").attr("cellID", element.cellId)
+                    $("#" + elem.attr('id') + "_overlay").attr("cellID", element.cellId)
+                    if(element.championId != 0) {
+                        var champName = _convertChampKeyToInternalName(element.championId);
                         elem.attr("src", _getBannerURLOfChamp(champName));
                     }
-                    if(btP.picking) {
-                        $('#' + elem.attr('id') + "_overlay").addClass("picking");
-                    } else {
-                        $('#' + elem.attr('id') + "_overlay").removeClass("picking");
-                    }
-                    $('#' + elem.attr('id') + "_name").text(btP.name);
                 });
-                //Blue Team Bans
-                data.blueTeam.bans.forEach(function(btP, index) {
-                    let elem = $('#blueside_ban' + (index+1));
-                    if(btP.championId != 0) {
-                        var champName = _convertChampKeyToInternalName(btP.championId);
-                        elem.attr("src", _getSquareURLOfChamp(champName));
-                    }
-                    if(btP.picking) {
-                        $('#' + elem.attr('id') + "_overlay").addClass("picking");
-                    } else {
-                        $('#' + elem.attr('id') + "_overlay").removeClass("picking");
-                    }
+
+                //UPDATE PICKING & PHASE
+                var pickingID = -1;
+                var actingID = -1;
+                var banningID = -1;
+                var phaseText = "Swapping";
+                data.actions.forEach(function(element) {
+                    element.forEach(function(element2) {
+                        if(element2.isInProgress != true) return;
+                            if(element2.type == "pick") {
+                                pickingID = element2.actorCellId;
+                                actingID = element2.actorCellId;
+                                phaseText = "Picking";   
+                            } else if(element2.type == "ban") {
+                                phaseText = "Banning";
+                                banningID = element2.actorCellId;
+                                actingID = element2.actorCellId;
+                            } else if(element2.type == "phase_transition") {
+                                phaseText = "";
+                            }
+                    })
                 });
-                //Red Team Bans
-                data.redTeam.bans.forEach(function(btP, index) {
-                    let elem = $('#redside_ban' + (index+1));
-                    if(btP.championId != 0) {
-                        var champName = _convertChampKeyToInternalName(btP.championId);
-                        elem.attr("src", _getSquareURLOfChamp(champName));
-                    }
-                    if(btP.picking) {
-                        $('#' + elem.attr('id') + "_overlay").addClass("picking");
-                    } else {
-                        $('#' + elem.attr('id') + "_overlay").removeClass("picking");
-                    }
-                });
-                
-                //Timer / Phase
-                switch(data.phase.phase) {
-                    case "swap":
-                        $('#phase').text("Swapping");
-                        break;
-                    case "pick":
-                        $('#phase').text("Picking");
-                        break;
-                    case "ban":
-                        $('#phase').text("Banning");
-                        break;
-                    default:
-                        $('#phase').text("");
-                        break;
-                }
-                if(data.phase.actingTeam == 1) {
+
+                $('div.pickoverlay.picking[cellId!=' + pickingID.toString() + "]").removeClass("picking");
+                $('div.pickoverlay[cellId=' + pickingID.toString() + ']').addClass("picking");
+                $('#phase').text(phaseText);
+                var actingTeam = _getTeamOfCellId(data, actingID);
+                if(actingTeam == 1) {
                     $("#timer").animate({'background-color': 'rgba(0,20,167,1)'});
-                } else if(data.phase.actingTeam == 2) {
+                } else if(actingTeam == 2) {
                     $("#timer").animate({'background-color': 'rgba(167,0,0,1)'});
                 } else {
                     $("#timer").animate({'background-color': '#050505'});
                 }
-                $('#timer').text(data.phase.timer);
+                var banningTeam = _getTeamOfCellId(data, banningID);
+                if(actingTeam == 1) {
+                    $($('div.banoverlay.bs[bandone=false]')[0]).addClass("picking");
+                } else {
+                    $($('div.banoverlay.rs[bandone=false]')[0]).addClass("picking");
+                }
+                $('div.banoverlay[bandone=true]').removeClass("picking");
 
+                //UPDATE TIMER
+                let startOfPhase = data.timer.internalNowInEpochMs;
+                let expectedEndOfPhase = startOfPhase + data.timer.adjustedTimeLeftInPhase;
+
+                let countdown = expectedEndOfPhase - new Date().getTime();
+                let countdownSec = Math.floor(countdown / 1000) + 5;
+                if(phaseText != "") {
+                    if (countdownSec < 0) {
+                        $('#timer').text("0");
+                    } else {
+                        $('#timer').text(countdownSec);
+                    }
+                } else {
+                    $('#timer').text("");
+                }
+
+                //UPDATE PLAYER NAMES
+                data.myTeam.forEach(function(element) {
+                    if(element.name != undefined) {       
+                        $('div.name[cellId=' + element.cellId + "]").text(element.name);
+                    } else {
+                        $('div.name[cellId=' + element.cellId + "]").text("");
+                    }
+                });
+
+                data.theirTeam.forEach(function(element) {
+                    if(element.name != undefined) {
+                        $('div.name[cellId=' + element.cellId + "]").text(element.name);
+                    } else {
+                        $('div.name[cellId=' + element.cellId + "]").text("");
+                    }
+                });
 
                 //UPDATING TEAMS
                 $.getJSON("/teams", (teamData) => {
@@ -458,9 +515,7 @@
 
             setInterval(() => {
                 $.getJSON('/get-pnb-data', (dataNew) => {
-                    if(dataNew != {}) {
-                        updateEverything(dataNew);
-                    }
+                    updateEverything(dataNew);
                 });
             }, 1000);
         </script>
