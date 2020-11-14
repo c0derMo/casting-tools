@@ -2,3 +2,4 @@ client/node_modules/*
 client/config.json
 */capture/*
 client/Cast-Info-Gatherer-win32-x64/*
+client/casttools-client-win32-x64/*

@@ -1,7 +1,6 @@
 const fs = require('fs');
 const express = require("express");
 const cors = require('cors');
-const { Module } = require('module');
 const app = express();
 
 app.use(cors());
@@ -162,30 +161,8 @@ function parseFile(i) {
     let data = JSON.parse(currentFile);
     
     let gamestate = createGamestate(data);
-    // console.log("\n\n\n\n\n\n\n\n\n\n\n\n\n");
-    // console.log(gamestate);
-
-    // if (i < counter) {
-    //     setTimeout(parseFile, 1000, i + 1);
-    // }
     return gamestate;
 }
-
-// parseFile(0)
-
-// let counter = -1;
-// let max = 73;
-
-// app.get('/get-pnb-data', (req, res) => {
-//     if(counter < max) {
-//         counter++;
-//     }
-//     res.send(JSON.stringify(parseFile(counter)));
-// });
-
-// app.listen(3000, () => {
-//     console.log("Server listening at port 3000");
-// })
 
 module.exports = {
     createGamestate: createGamestate

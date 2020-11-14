@@ -43,7 +43,7 @@ function createWindow () {
     livedatacollector.addStateChangeListener(sendConfig);
   });
 
-  win.webContents.openDevTools();
+  //win.webContents.openDevTools();
 
   window = win;
 }

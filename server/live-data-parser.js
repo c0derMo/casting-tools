@@ -28,11 +28,16 @@ function parseLiveData(allPlayerData, eventData, gameData, internalData) {
         }
     };
 
-    //Read secondary summoner spells
+    //Read secondary summoner spells & items
     let rTI = 0;
     let bTI = 0;
     allPlayerData.forEach(function(player) {
         let runeTree = "";
+        let items = []
+        player.items.forEach(elem => {
+            items.push(elem.itemID);
+        });
+
         if(player.runes != null) {
             switch(player.runes.secondaryRuneTree.id) {
                 case 8000:
@@ -54,10 +59,22 @@ function parseLiveData(allPlayerData, eventData, gameData, internalData) {
             if(player.team == "ORDER") {
                 //Blue Team
                 liveData.blueTeamPlayers[bTI].secondaryRuneTree = runeTree;
+                liveData.blueTeamPlayers[bTI].items = items;
                 bTI++;
             } else if(player.team == "CHAOS") {
                 //Red Team
                 liveData.redTeamPlayers[rTI].secondaryRuneTree = runeTree;
+                liveData.redTeamPlayers[rTI].items = items;
+                rTI++;
+            }
+        } else {
+            if(player.team == "ORDER") {
+                //Blue Team
+                liveData.blueTeamPlayers[bTI].items = items;
+                bTI++;
+            } else if(player.team == "CHAOS") {
+                //Red Team
+                liveData.redTeamPlayers[rTI].items = items;
                 rTI++;
             }
         }
