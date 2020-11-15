@@ -71,6 +71,11 @@ function removeStateChangeListener(fnc) {
     })
 }
 
+function executeACE(rq, cb) {
+    if(!isConnected) return {};
+    request.get("https://" + connectionCredentials.username + ":" + connectionCredentials.password + "@127.0.0.1:" + connectionCredentials.port + rq, {rejectUnauthorized: false}).then((data) => {cb(data.body)});
+}
+
 module.exports = {
     startLCUCollection: startLCUCollection,
     stopLCUCollection: stopLCUCollection,
@@ -78,5 +83,6 @@ module.exports = {
     fetchSummonerNames: fetchSummonerNames,
     isLCURunning: isLCURunning,
     addStateChangeListener: addStateChangeListener,
-    removeStateChangeListener: removeStateChangeListener
+    removeStateChangeListener: removeStateChangeListener,
+    executeACE: executeACE
 }

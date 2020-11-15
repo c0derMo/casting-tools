@@ -6,6 +6,7 @@ const port = 3000;
 const overlayroute = require('./overlay-route');
 const fs = require('fs')
 const pnbParser = require('./pnb-parser');
+const aceRoute = require('./ace');
 
 let lastPnbData = {};
 let blueSide = "";
@@ -24,6 +25,8 @@ app.use(cors());
 app.use("/pnb", express.static('html/pnb'));
 
 app.use("/overlay", overlayroute);
+
+app.use('/ace', aceRoute);
 
 app.post('/post-pnb-data', (req, res) => {
     let data = JSON.parse(req.body.someData);
