@@ -224,7 +224,7 @@
             }
 
             setInterval(() => {            
-                $.getJSON("http://localhost:3000/overlay/combineddata", (data) => {                  // Change to real thing, put into loop
+                $.getJSON("http://currymaker.net:3000/overlay/combineddata", (data) => {                  // Change to real thing, put into loop
                     console.log(data)
                     data.redTeamPlayers.forEach((pl, idx) => {
                         let elem = $("div[team=red][playerid=" + idx + "]");
