@@ -1,0 +1,12 @@
+{
+  "name": "tests_mem_reading",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "memoryjs": "^3.4.0"
+  }
+}
