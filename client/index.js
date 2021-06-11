@@ -144,13 +144,13 @@ function fetchData() {
     });
   }
 
-  if(config.lcu.ace) {
-    request.get(config.general.server + "/ace/next", {rejectUnauthorised: false}).then((data) => {
-      if(data.body != "") {
-        lcucollector.executeACE(data.body, (newData) => {
-          if(newData != {}) request.post(config.general.server + "/ace/result", {data: JSON.stringify({"request": data.body.toString(), "response": newData})}).catch(() => {});
-        });
-      }
-    }).catch(() => {});
-  }
+  // if(config.lcu.ace) {
+  //   request.get(config.general.server + "/ace/next", {rejectUnauthorised: false}).then((data) => {
+  //     if(data.body != "") {
+  //       lcucollector.executeACE(data.body, (newData) => {
+  //         if(newData != {}) request.post(config.general.server + "/ace/result", {data: JSON.stringify({"request": data.body.toString(), "response": newData})}).catch(() => {});
+  //       });
+  //     }
+  //   }).catch(() => {});
+  // }
 }

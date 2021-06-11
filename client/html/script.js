@@ -20,7 +20,7 @@ function jsonifySettings() {
         lcu: {
             champselect: $('#lcu-champselect-session').is(':checked'),
             names: $('#lcu-summonernames').is(':checked'),
-            ace: $('#ace_lcu').is(':checked')
+            // ace: $('#ace_lcu').is(':checked')
         },
         lcd: {
             playerlist: $('#lcd-playerlist').is(':checked'),

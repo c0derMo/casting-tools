@@ -26,7 +26,7 @@ app.use("/pnb", express.static('html/pnb'));
 
 app.use("/overlay", overlayroute);
 
-app.use('/ace', aceRoute);
+//app.use('/ace', aceRoute);
 
 app.post('/post-pnb-data', (req, res) => {
     let data = JSON.parse(req.body.someData);
