@@ -84,5 +84,5 @@ module.exports = {
     isLCURunning: isLCURunning,
     addStateChangeListener: addStateChangeListener,
     removeStateChangeListener: removeStateChangeListener,
-    executeACE: executeACE
+    // executeACE: executeACE
 }
